@@ -1,20 +1,13 @@
 const express = require('express')
 const User = require('../models/User')
+const upload = require('../middleware/upload.middleware')
+const { createUser } = require('../controllers/userController')
 
 const router = express.Router()
 
 // Create user
 
-router.post('/user', async (req, res) => {
-  try {
-    const dataReq = req.body
-
-    const user = await User.create(dataReq)
-    res.status(201).json(user)
-  } catch (error) {
-    res.status(400).json({ error: error.message })
-  }
-})
+router.post('/user', upload.single('avatar'), createUser)
 
 // Get all users
 
