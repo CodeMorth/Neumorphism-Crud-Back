@@ -1,7 +1,6 @@
 const express = require('express')
-const User = require('../models/User')
 const upload = require('../middleware/upload.middleware')
-const { createUser } = require('../controllers/userController')
+const { createUser, getAllUser, getUserById, updateUser, deleteUser } = require('../controllers/userController')
 
 const router = express.Router()
 
@@ -11,59 +10,18 @@ router.post('/user', upload.single('avatar'), createUser)
 
 // Get all users
 
-router.get('/user', async (req, res) => {
-  try {
-    const users = await User.findAll()
-    res.json(users)
-  } catch (error) {
-    res.status(400).json({ error: error.message })
-  }
-})
+router.get('/user', getAllUser)
 
 // Get user by id
 
-router.get('/user/:id', async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id)
-    if (user) {
-      res.json(user)
-    } else {
-      res.status(404).json({ error: 'Usuario no encontrado' })
-    }
-  } catch (error) {
-    res.status(400).json({ error: error.message })
-  }
-})
+router.get('/user/:id', getUserById)
 
 // Update users
 
-router.put('/user/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const { name, email } = req.body
-
-    await User.update({ name, email }, { where: { id } })
-    res.status(201).json(User)
-  } catch (error) {
-    res.status(400).json({ error: 'Usuario no encontrado' })
-  }
-})
+router.put('/user/:id', updateUser)
 
 // Delete user
 
-router.delete('/user/:id', async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id)
-
-    if (user) {
-      await user.destroy()
-      res.json('Usuario eliminado')
-    } else {
-      res.status(400).json({ error: 'Usuario no encontrado' })
-    }
-  } catch (error) {
-    res.status(400).json({ error: error.message })
-  }
-})
+router.delete('/user/:id', deleteUser)
 
 module.exports = router
