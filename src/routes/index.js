@@ -1,6 +1,12 @@
+const upload = require('../middleware/multer.midleware')
 const express = require('express')
-const upload = require('../middleware/upload.middleware')
-const { createUser, getAllUser, getUserById, updateUser, deleteUser } = require('../controllers/userController')
+const {
+  createUser,
+  getAllUser,
+  getUserById,
+  updateUser,
+  deleteUser
+} = require('../controllers/userController')
 
 const router = express.Router()
 

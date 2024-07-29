@@ -1,25 +1,24 @@
 const User = require('../models/User')
-
-// const createUser = async (req, res) => {
-//   try {
-//     const dataReq = req.body
-//     const avatar = req.file ? `/uploads/${req.file.filename}` : null
-
-//     const user = await User.create({ ...dataReq, avatar })
-//     res.status(201).json(user)
-//   } catch (error) {
-//     res.status(400).json({ error: error.message })
-//   }
-// }
+const cloudinary = require('../utils/cloudynari')
 
 const createUser = async (req, res) => {
   try {
-    const dataReq = req.body
-    const avatar = req.file
-      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
-      : null
+    // const dataReq = req.body
 
-    const user = await User.create({ ...dataReq, avatar })
+    if (req.file) {
+      const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path)
+
+      console.log('req.file.path', req.file.path)
+
+      req.body.avatar = cloudinaryResponse.secure_url
+    }
+
+    const user = await User.create(req.body)
+
+    console.log('req.file', req.file)
+
+    console.log('req.body', req.body)
+
     res.status(201).json(user)
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -76,3 +75,15 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = { createUser, getAllUser, getUserById, updateUser, deleteUser }
+
+// const createUser = async (req, res) => {
+//   try {
+//     const dataReq = req.body
+//     const avatar = req.file ? `/uploads/${req.file.filename}` : null
+
+//     const user = await User.create({ ...dataReq, avatar })
+//     res.status(201).json(user)
+//   } catch (error) {
+//     res.status(400).json({ error: error.message })
+//   }
+// }
